@@ -22,15 +22,11 @@ public class MovieDetails {
     private MovieService movieService ;
 
     @PostMapping("/v1/internal/add-movie")
-    @Validated
-    public ResponseEntity<?> addMovie(@RequestBody @Valid Movie movie , BindingResult result){
+    public ResponseEntity<?> addMovie(@RequestBody Movie movie){
 
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result.getAllErrors());
-        }
         Movie addMovie = movieService.createMovie(movie);
 
         log.info("The Movie " +movie.getTitle()+ " Have been added","");
-        return ResponseEntity.status(HttpStatus.OK).body(addMovie);
+        return ResponseEntity.status(HttpStatus.OK).body("The Movie " +movie.getTitle()+ " Have been added");
     }
 }
