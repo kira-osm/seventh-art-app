@@ -44,7 +44,6 @@ public class MovieImplementation implements MovieService {
         }
     }
 
-
     @Override
     public Page<Movie> getAllMovies(Pageable pageable) {
         return movieRepository.findAll(pageable);
