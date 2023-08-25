@@ -6,16 +6,17 @@ import org.springframework.data.domain.Pageable;
 
 public interface MovieService {
 
-    Movie createMovie(Movie movie);
+    void createMovie(Movie movie);
 
     Page<Movie> getAllMovies(Pageable pageable);
 
     Movie getMovieByTitle(String title);
 
-     Page<Movie> searchMoviesByTitleFuzzy(String title, Pageable pageable);
+    Page<Movie> searchMoviesByTitleFuzzy(String title, Pageable pageable);
 
     Movie updateMovieByTitle(String title, Movie movieToUpdate);
 
+    void deleteMovieByTitle(String id);
 
-    void deleteMovieById(String id);
+    boolean doesMovieExistByTitle(String title);
 }

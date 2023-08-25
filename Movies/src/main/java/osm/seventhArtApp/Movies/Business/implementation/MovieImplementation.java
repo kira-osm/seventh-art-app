@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import osm.seventhArtApp.Movies.Business.mapper.MovieMapper;
 
-import java.util.List;
 @Service
 public class MovieImplementation implements MovieService {
 
@@ -18,8 +17,8 @@ public class MovieImplementation implements MovieService {
     private MovieRepository movieRepository;
 
     @Override
-    public Movie createMovie(Movie movie) {
-        return movieRepository.save(movie);
+    public void createMovie(Movie movie) {
+        movieRepository.save(movie);
     }
 
     @Override
@@ -52,7 +51,12 @@ public class MovieImplementation implements MovieService {
     }
 
     @Override
-    public void deleteMovieById(String id) {
-        movieRepository.deleteById(id);
+    public void deleteMovieByTitle(String title) {
+        movieRepository.deleteByTitleIgnoreCase(title);
+    }
+
+    @Override
+    public boolean doesMovieExistByTitle(String title) {
+        return movieRepository.existsByTitleIgnoreCase(title);
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import osm.seventhArtApp.Movies.Business.api.MovieService;
-import osm.seventhArtApp.Movies.Exceptions.MovieExceptions;
 import osm.seventhArtApp.Movies.Model.Movie;
 
 @RestController
@@ -15,33 +14,42 @@ import osm.seventhArtApp.Movies.Model.Movie;
 public class MovieDetailsWrite {
 
     @Autowired
-    private MovieService movieService ;
+    private MovieService movieService;
 
     // Add a new movie with details.
     @PostMapping("/v1/internal/add-movie")
-    public ResponseEntity<?> addMovie(@RequestBody Movie movie){
+    public ResponseEntity<?> addMovie(@RequestBody Movie movie) {
+        String title = movie.getTitle();
+        if (movieService.doesMovieExistByTitle(title)) {
+            return ResponseEntity.badRequest().body("Movie with title " + title + " already exists.");
+        }
 
-        Movie addMovie = movieService.createMovie(movie);
+        movieService.createMovie(movie);
 
-        log.info("The Movie " +movie.getTitle()+ " Have been added","");
-        return ResponseEntity.status(HttpStatus.OK).body("The Movie " +movie.getTitle()+ " Have been added successfully");
+        log.info("The Movie " + movie.getTitle() + " Have been added", "");
+        return ResponseEntity.status(HttpStatus.OK).body("The Movie " + movie.getTitle() + " Have been added successfully");
     }
 
 
     // Update movie with details.
     @PutMapping("/v1/internal/update-movie-by-title")
-    public ResponseEntity<Movie> updateMovieByTitle(
-            @RequestParam String title,
-            @RequestBody Movie movieToUpdate) {
+    public ResponseEntity<Movie> updateMovieByTitle(@RequestParam String title, @RequestBody Movie movieToUpdate) {
 
         Movie updatedMovie = movieService.updateMovieByTitle(title, movieToUpdate);
         if (updatedMovie == null) {
 
-            log.info("The Movie " +title + " not found","");
+            log.info("The Movie " + title + " not found", "");
             //throw new MovieExceptions("No movies found for title: " + title);
         }
-        log.info("The Movie " +title + " Have been Updated","");
+        log.info("The Movie " + title + " Have been Updated", "");
         return ResponseEntity.ok(updatedMovie);
+    }
+
+    @DeleteMapping("/v1/internal/delete-movie-by-title")
+    public ResponseEntity<String> deleteMovieByTitle(@RequestParam String title) {
+        movieService.deleteMovieByTitle(title);
+        log.info("The Movie with title {} has been deleted", title);
+        return ResponseEntity.ok("Movie with title " + title + " has been deleted");
     }
 
 

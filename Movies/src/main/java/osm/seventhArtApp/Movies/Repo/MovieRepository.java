@@ -17,4 +17,8 @@ public interface MovieRepository  extends MongoRepository<Movie , String> {
     Page<Movie> findByTitleFuzzy(String title, Pageable pageable);
 
     Movie findByTitleIgnoreCase(String title);
+
+    void deleteByTitleIgnoreCase(String title);
+
+    boolean existsByTitleIgnoreCase(String title);
 }
