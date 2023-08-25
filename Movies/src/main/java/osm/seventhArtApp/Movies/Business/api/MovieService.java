@@ -1,16 +1,21 @@
 package osm.seventhArtApp.Movies.Business.api;
 
-import org.springframework.stereotype.Service;
 import osm.seventhArtApp.Movies.Model.Movie;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MovieService {
 
     Movie createMovie(Movie movie);
-    Movie getMovieById(String id);
-    Movie updateMovie(String movieId, Movie movie);
-    List<Movie> getMovie();
+
+    Page<Movie> getAllMovies(Pageable pageable);
+
+    Movie getMovieByTitle(String title);
+
+     Page<Movie> searchMoviesByTitleFuzzy(String title, Pageable pageable);
+
+    Movie updateMovieByTitle(String title, Movie movieToUpdate);
+
 
     void deleteMovieById(String id);
 }
