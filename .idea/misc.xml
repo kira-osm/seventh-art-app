@@ -17,11 +17,13 @@
       <list>
         <option value="$PROJECT_DIR$/Movies/pom.xml" />
         <option value="$PROJECT_DIR$/Config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/seventh-art-app-config/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/Config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/seventh-art-app-config/pom.xml" />
       </set>
     </option>
   </component>

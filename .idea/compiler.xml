@@ -13,6 +13,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Config-server" target="20" />
+      <module name="seventh-art-app-config" target="20" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
