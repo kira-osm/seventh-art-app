@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import osm.seventhArtApp.Movies.Business.api.MovieService;
+import osm.seventhArtApp.Movies.Config.MongoConfig;
 import osm.seventhArtApp.Movies.Exceptions.MovieExceptions;
 import osm.seventhArtApp.Movies.Model.Movie;
 
@@ -19,6 +20,9 @@ public class MovieDetailsRead {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private MongoConfig mongoConfig;
 
     @GetMapping("/v1/internal/all-movies")
     public ResponseEntity<Page<Movie>> getAllMovies(
@@ -50,6 +54,7 @@ public class MovieDetailsRead {
     @GetMapping("/v1/internal/get-movie-by-title")
     public ResponseEntity<Movie> getMovieByTitle(
             @RequestParam String title) {
+        String mongodbUri = mongoConfig.getUri();
         Movie movie = movieService.getMovieByTitle(title);
         if (movie == null) {
             throw new MovieExceptions("No movies found for title: " + title);
