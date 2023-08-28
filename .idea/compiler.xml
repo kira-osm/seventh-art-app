@@ -7,12 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="config-server" />
         <module name="Movies" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Config-server" target="20" />
+      <module name="config-server" target="17" />
       <module name="seventh-art-app-config" target="20" />
     </bytecodeTargetLevel>
   </component>
