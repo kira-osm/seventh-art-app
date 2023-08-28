@@ -1,5 +1,6 @@
 package osm.seventhArtApp.Movies.Model;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
-
+@JacksonXmlRootElement(localName = "movie")
 @Document(collection = "movies")
 @Data
 @Builder
