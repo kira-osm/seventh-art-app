@@ -1,6 +1,8 @@
 package osm.seventhArtApp.Movies.Api.interne;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,9 @@ public class MovieDetailsRead {
 
     @Autowired
     private MovieService movieService;
+
+    private static final Logger log = LoggerFactory.getLogger(MovieDetailsWrite.class);
+
 
 
     @GetMapping("/v1/internal/all-movies")
