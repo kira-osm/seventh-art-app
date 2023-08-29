@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import osm.seventhArtApp.Movies.Business.api.MovieService;
+import osm.seventhArtApp.Movies.Business.mapper.FileUpdate;
 import osm.seventhArtApp.Movies.Exceptions.MovieExceptions;
 import osm.seventhArtApp.Movies.Model.Movie;
 import osm.seventhArtApp.Movies.Repo.MovieRepository;
@@ -11,10 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import osm.seventhArtApp.Movies.Business.mapper.MovieMapper;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 @Service
 public class MovieImplementation implements MovieService {
@@ -46,23 +43,17 @@ public class MovieImplementation implements MovieService {
             movieRepository.save(movie);
             System.out.println("Movie saved: " + movie);
 
-            // Renommer le fichier en utilisant l'ID généré par MongoDB
-            String newFileName = movie.getId() + ".xml";
-            String oldFilePath = xmlUploadDirectory + "/"+fileNameXml+".xml";
-            String newFilePath = xmlUploadDirectory + "/" + newFileName;
+            String newFileName = FileUpdate.renameXmlFile(movie.getId(), xmlUploadDirectory, fileNameXml);
 
-            Path oldPath = Paths.get(oldFilePath);
-            Path newPath = Paths.get(newFilePath);
-
-            Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
-
-            System.out.println("File renamed to: " + newFileName);
-
+            if (newFileName != null) {
+                System.out.println("File renamed to: " + newFileName);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public Movie getMovieByTitle(String title) {
