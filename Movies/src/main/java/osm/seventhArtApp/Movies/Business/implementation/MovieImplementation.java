@@ -1,6 +1,7 @@
 package osm.seventhArtApp.Movies.Business.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import osm.seventhArtApp.Movies.Business.api.MovieService;
 import osm.seventhArtApp.Movies.Exceptions.MovieExceptions;
@@ -10,8 +11,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import osm.seventhArtApp.Movies.Business.mapper.MovieMapper;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 @Service
 public class MovieImplementation implements MovieService {
+
+    @Value("${xml.upload.directory}")
+    private String xmlUploadDirectory;
+
+    @Value("${spring.application.name}")
+    private String fileNameXml;
 
     @Autowired
     private MovieRepository movieRepository;
@@ -19,6 +31,37 @@ public class MovieImplementation implements MovieService {
     @Override
     public void createMovie(Movie movie) {
         movieRepository.save(movie);
+    }
+
+    @Override
+    public void addNewMovieFile(Movie movie) {
+        try {
+            String title = movie.getTitle();
+
+            if (this.doesMovieExistByTitle(title)) {
+                System.out.println("Movie with title " + title + " already exists.");
+                return;
+            }
+
+            movieRepository.save(movie);
+            System.out.println("Movie saved: " + movie);
+
+            // Renommer le fichier en utilisant l'ID généré par MongoDB
+            String newFileName = movie.getId() + ".xml";
+            String oldFilePath = xmlUploadDirectory + "/"+fileNameXml+".xml";
+            String newFilePath = xmlUploadDirectory + "/" + newFileName;
+
+            Path oldPath = Paths.get(oldFilePath);
+            Path newPath = Paths.get(newFilePath);
+
+            Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("File renamed to: " + newFileName);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import osm.seventhArtApp.Movies.Business.api.MovieService;
 import osm.seventhArtApp.Movies.Model.Movie;
 import osm.seventhArtApp.Movies.Repo.MovieRepository;
 
@@ -26,8 +27,13 @@ public class XmlFileProcessor {
 
     @Value("${xml.upload.directory}")
     private String xmlUploadDirectory;
+
+    @Value("${spring.application.name}")
+    private String fileNameXml;
+
+
     @Autowired
-    private MovieRepository movieRepository;
+    private MovieService movieService;
 
     private final Lock fileProcessingLock = new ReentrantLock();
 
@@ -51,7 +57,7 @@ public class XmlFileProcessor {
                     Path fileName = (Path) event.context();
                     String filePath = xmlUploadDirectory + "/" + fileName;
 
-                    if (fileName.toString().equals("movie.xml")) {
+                    if (fileName.toString().equals(this.fileNameXml+".xml")) {
                         if (fileProcessingLock.tryLock()) {
                             try {
                                 System.out.println("New XML file detected: " + fileName);
@@ -68,10 +74,8 @@ public class XmlFileProcessor {
                                 JsonNode jsonNode = objectMapper.readTree(json);
                                 Movie movieData = objectMapper.treeToValue(jsonNode, Movie.class);
 
-                                System.out.println(movieData);
+                                movieService.addNewMovieFile(movieData);
 
-                                // Uncomment to save the MovieEntity to MongoDB
-                                // movieRepository.save(movieData);
                             } finally {
                                 fileProcessingLock.unlock();
                             }

@@ -8,6 +8,8 @@ public interface MovieService {
 
     void createMovie(Movie movie);
 
+    void addNewMovieFile(Movie movie);
+
     Page<Movie> getAllMovies(Pageable pageable);
 
     Movie getMovieByTitle(String title);
