@@ -1,5 +1,7 @@
 package osm.seventhArtApp.Movies.Business.implementation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,14 +18,17 @@ import osm.seventhArtApp.Movies.Business.mapper.MovieMapper;
 @Service
 public class MovieImplementation implements MovieService {
 
+    @Autowired
+    private MovieRepository movieRepository;
+
     @Value("${xml.upload.directory}")
     private String xmlUploadDirectory;
 
     @Value("${spring.application.name}")
     private String fileNameXml;
 
-    @Autowired
-    private MovieRepository movieRepository;
+    private static final Logger log = LoggerFactory.getLogger(MovieImplementation.class);
+
 
     @Override
     public void createMovie(Movie movie) {
@@ -41,9 +46,11 @@ public class MovieImplementation implements MovieService {
             }
 
             movieRepository.save(movie);
-            System.out.println("Movie saved: " + movie);
 
-            String newFileName = FileUpdate.renameXmlFile(movie.getId(), xmlUploadDirectory, fileNameXml);
+            log.info("Movie {} saved successfully", movie.getTitle());
+
+            String newFileName = FileUpdate.renameXmlFile(movie.getTitle(), xmlUploadDirectory, fileNameXml);
+
 
             if (newFileName != null) {
                 System.out.println("File renamed to: " + newFileName);
