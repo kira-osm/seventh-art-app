@@ -16,6 +16,26 @@ public class Movie implements Serializable {
      */
     @Serial
     private static final long serialVersionUID = 1L;
+    @Id
+    private String id;
+    private String title;
+
+    private String image;
+
+    private String description;
+
+    private String category;
+
+    private String duration;
+    private String trailer;
+
+    private String year;
+
+    private int score;
+    private String comments;
+    private Date createdAt;
+    private Date updatedAt;
+
 
     public String getTitle() {
         return title;
@@ -113,25 +133,7 @@ public class Movie implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    @Id
-    private String id;
-    private String title;
 
-    private String image;
-
-    private String description;
-
-    private String category;
-
-    private String duration;
-    private String trailer;
-
-    private String year;
-
-    private int score;
-    private String comments;
-    private Date createdAt;
-    private Date updatedAt;
 
 
     public Movie() {
