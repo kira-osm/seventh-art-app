@@ -30,4 +30,35 @@ public class FileUpdate {
             return null;
         }
     }
+
+    public static void deleteXmlFile(String fileName, String xmlUploadDirectory) {
+        try {
+            String filePath = xmlUploadDirectory + "/" + fileName + ".xml";
+            Path path = Paths.get(filePath);
+
+            Files.deleteIfExists(path);
+            System.out.println("XML file deleted: " + fileName + ".xml");
+        } catch (Exception e) {
+            System.out.println("Failed to delete XML file: " + e.getMessage());
+        }
+    }
+    public static void moveXmlFileToDestination(String fileName, String xmlUploadDirectory, String xmlUploadDestination) {
+        try {
+            String sourceFilePath = xmlUploadDirectory + "/" + fileName;
+            String destinationFilePath = xmlUploadDestination + "/" + fileName;
+
+            Path sourcePath = Paths.get(sourceFilePath);
+            Path destinationPath = Paths.get(destinationFilePath);
+
+            Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("File moved to: " + destinationFilePath);
+
+        } catch (Exception e) {
+            System.out.println("Failed to move file: " + e.getMessage());
+        }
+    }
+
+
+
 }

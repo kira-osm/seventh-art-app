@@ -27,6 +27,9 @@ public class MovieImplementation implements MovieService {
     @Value("${spring.application.name}")
     private String fileNameXml;
 
+    @Value("${xml.upload.destination}")
+    private String xmlUploadDestination;
+
     private static final Logger log = LoggerFactory.getLogger(MovieImplementation.class);
 
 
@@ -42,6 +45,7 @@ public class MovieImplementation implements MovieService {
 
             if (this.doesMovieExistByTitle(title)) {
                 System.out.println("Movie with title " + title + " already exists.");
+                FileUpdate.deleteXmlFile(fileNameXml, xmlUploadDirectory);
                 return;
             }
 
@@ -54,6 +58,7 @@ public class MovieImplementation implements MovieService {
 
             if (newFileName != null) {
                 System.out.println("File renamed to: " + newFileName);
+                FileUpdate.moveXmlFileToDestination(newFileName, xmlUploadDirectory, xmlUploadDestination);
             }
 
         } catch (Exception e) {
