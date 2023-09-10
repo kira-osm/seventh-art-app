@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import osm.seventhArtApp.Movies.Business.mapper.MovieMapper;
 
 
+@SuppressWarnings("ALL")
 @Service
 public class MovieImplementation implements MovieService {
 
