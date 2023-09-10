@@ -1,15 +1,24 @@
 const Actor = require('../Models/Actor');
 
 class ActorControllerReader {
-  static async getAllActors(req, res) {
-    try {
-      const actors = await Actor.find();
-      res.json(actors);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error retrieving actors' });
-    }
-  }
+    
+    static async getAllActors(req, res) {
+        try {
+          const page = parseInt(req.query.page) || 1; // Page par défaut 1
+          const size = parseInt(req.query.size) || 10; // Taille par défaut 10
+          const skip = (page - 1) * size;
+      
+          const actors = await Actor.find()
+            .skip(skip)
+            .limit(size);
+      
+          res.json(actors);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Error retrieving actors' });
+        }
+      }
+      
 
   static async searchByFirstNameOrLastNameOrBoth(req, res) {
     try {
@@ -41,7 +50,7 @@ class ActorControllerReader {
             // Si des acteurs sont trouvés, renvoyer la liste
             res.json(actors);
           }
-          
+
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error searching for actors' });
