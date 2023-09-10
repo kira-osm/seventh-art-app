@@ -1,8 +1,19 @@
 const Actor = require('./../Models/Actor');
+const { validationResult, check } = require('express-validator');
+const { validateActor } = require('../utils/actorValidation'); // Importez les règles de validation
+
 
 class ActorControllerWriter {
+
+
   static async createActor(req, res) {
     try {
+      // Valider les données
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
       const actorData = req.body;
       const actor = new Actor(actorData);
       await actor.save();
@@ -17,7 +28,7 @@ class ActorControllerWriter {
     try {
        // req.query pour extraire les paramètres de l'URL
       const { firstName, lastName } = req.query;
-      
+
       //req.body pour extraire les données de mise à jour
       const updatedData = req.body; 
       
