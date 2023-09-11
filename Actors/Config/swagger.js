@@ -1,6 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
-const path = require('path'); // Ajoutez cette ligne pour importer le module path
-
+const path = require('path');
 
 const options = {
   swaggerDefinition: {
@@ -10,8 +9,13 @@ const options = {
       version: '1.0.0',
       description: 'API pour gérer les acteurs',
     },
+    servers: [
+      {
+        url: '/v1', // Préfixe ici
+      },
+    ],
   },
-  apis: [path.resolve(__dirname, '../Routes/*.js')], // Utilisez path.resolve pour spécifier le chemin absolu
+  apis: [path.resolve(__dirname, '../Routes/*.js')],
 };
 
 const specs = swaggerJsdoc(options);
