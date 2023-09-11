@@ -1,13 +1,12 @@
 const Actor = require("./../Models/Actor");
+const generatePdf = require("../Services/generatePdf");
 const { validationResult } = require("express-validator");
 const logger = require("../Config/logger");
-const xml2js = require('xml2js');
+const xml2js = require("xml2js");
+const PDFDocument = require("pdfkit");
 const sendEmail = require("../Services/emailService");
 
 class ActorControllerWriter {
-
-  
-
   static async createActor(req, res) {
     try {
       // Valider les données
@@ -15,17 +14,20 @@ class ActorControllerWriter {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-  
+
       const actorData = req.body;
       const actor = new Actor(actorData);
 
       const builder = new xml2js.Builder();
       const xmlData = builder.buildObject(actorData);
 
-      actor.xmlData = xmlData; 
+      actor.xmlData = xmlData;
+
+      // Generer le fichier PDF
+      const pdfBuffer = await generatePdf(actorData);
 
       await actor.save();
-  
+
       const emailTo = process.env.EMAIL_To;
       const emailSubject = "Nouvel acteur ajouté";
       const emailHtmlContent = `
@@ -43,13 +45,20 @@ class ActorControllerWriter {
         </body>
       </html>
     `;
-  
+
       const imageBase64 = actor.image; // Récupérez l'image en base64 du modèle
-  
-      sendEmail(emailTo, emailSubject, emailHtmlContent, imageBase64, actor.xmlData);
-  
+
+      sendEmail(
+        emailTo,
+        emailSubject,
+        emailHtmlContent,
+        imageBase64,
+        actor.xmlData,
+        pdfBuffer
+      );
+
       res.json(actor);
-  
+
       // Journalisation en cas de succès
       logger.info("Acteur créé avec succès", { actor: actor });
     } catch (error) {
@@ -57,14 +66,12 @@ class ActorControllerWriter {
       res.status(500).json({
         error: "Une erreur s'est produite lors de la création de l'acteur.",
       });
-  
+
       // Journalisation en cas d'erreur
       logger.error("Erreur lors de la création de l'acteur", { error: error });
     }
   }
 
-
-  
   static async updateActor(req, res) {
     try {
       // req.query pour extraire les paramètres de l'URL
