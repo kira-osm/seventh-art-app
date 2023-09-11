@@ -1,6 +1,7 @@
 const Actor = require("./../Models/Actor");
 const { validationResult } = require("express-validator");
 const logger = require("../Config/logger");
+const xml2js = require('xml2js');
 const sendEmail = require("../Services/emailService");
 
 class ActorControllerWriter {
@@ -17,9 +18,15 @@ class ActorControllerWriter {
   
       const actorData = req.body;
       const actor = new Actor(actorData);
+
+      const builder = new xml2js.Builder();
+      const xmlData = builder.buildObject(actorData);
+
+      actor.xmlData = xmlData; 
+
       await actor.save();
   
-      const emailTo = "xxxx@gmail.com";
+      const emailTo = process.env.EMAIL_To;
       const emailSubject = "Nouvel acteur ajouté";
       const emailHtmlContent = `
       <html>
@@ -39,7 +46,7 @@ class ActorControllerWriter {
   
       const imageBase64 = actor.image; // Récupérez l'image en base64 du modèle
   
-      sendEmail(emailTo, emailSubject, emailHtmlContent, imageBase64);
+      sendEmail(emailTo, emailSubject, emailHtmlContent, imageBase64, actor.xmlData);
   
       res.json(actor);
   

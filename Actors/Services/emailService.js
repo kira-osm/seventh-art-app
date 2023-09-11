@@ -1,11 +1,12 @@
-// emailService.js
+
 const nodemailer = require('nodemailer');
+const xml2js = require('xml2js');
 const Datauri = require('datauri/parser');
 const datauri = new Datauri();
 
 require('dotenv').config();
 
-const sendEmail = async (to, subject, htmlContent, imageBase64) => {
+const sendEmail = async (to, subject, htmlContent, imageBase64, xmlData) => {
   try {
     
     // Convertir l'image base64 en format de données URI
@@ -32,6 +33,10 @@ const sendEmail = async (to, subject, htmlContent, imageBase64) => {
           filename: 'actorImage.png', 
           content: imageBuffer, 
           cid: 'actorImage', // ID de l'image pour la référencer dans le contenu HTML
+        },
+        {
+          filename: 'actorData.xml',
+          content: xmlData, // Contenu XML généré à partir des données de l'acteur
         },
       ],
     };

@@ -11,6 +11,7 @@ const actorSchema = new mongoose.Schema({
   biography: String,
   birthday: String,
   placeOfBirth: String,
+  xmlData: String,
 } );
 
 const Actor = mongoose.model('Actor', actorSchema);
