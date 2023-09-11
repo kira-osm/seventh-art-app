@@ -1,11 +1,8 @@
 const Actor = require('./../Models/Actor');
-const { validationResult, check } = require('express-validator');
-const { validateActor } = require('../utils/actorValidation'); // Importez les règles de validation
-
+const { validationResult } = require('express-validator');
+const logger = require('../Config/logger');
 
 class ActorControllerWriter {
-
-
   static async createActor(req, res) {
     try {
       // Valider les données
@@ -13,44 +10,56 @@ class ActorControllerWriter {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-  
+
       const actorData = req.body;
       const actor = new Actor(actorData);
       await actor.save();
       res.json(actor);
+
+      // Journalisation en cas de succès
+      logger.info('Acteur créé avec succès', { actor: actor });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Une erreur s\'est produite lors de la création de l\'acteur.' });
+
+      // Journalisation en cas d'erreur
+      logger.error('Erreur lors de la création de l\'acteur', { error: error });
     }
   }
 
   static async updateActor(req, res) {
     try {
-       // req.query pour extraire les paramètres de l'URL
+      // req.query pour extraire les paramètres de l'URL
       const { firstName, lastName } = req.query;
 
-      //req.body pour extraire les données de mise à jour
-      const updatedData = req.body; 
-      
+      // req.body pour extraire les données de mise à jour
+      const updatedData = req.body;
+
       const query = {
         $or: [
           { firstName },
           { lastName },
         ],
       };
-  
+
       const updatedActor = await Actor.findOneAndUpdate(query, updatedData, { new: true });
-  
+
       if (!updatedActor) {
         return res.status(404).json({ error: 'Actor not found' });
       }
-  
+
       res.json({ message: 'Actor updated successfully', actor: updatedActor });
+
+      // Journalisation en cas de succès
+      logger.info('Acteur mis à jour avec succès', { actor: updatedActor });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error updating actor' });
+
+      // Journalisation en cas d'erreur
+      logger.error('Erreur lors de la mise à jour de l\'acteur', { error: error });
     }
-}
+  }
 
   static async deleteActor(req, res) {
     try {
@@ -75,9 +84,15 @@ class ActorControllerWriter {
       }
 
       res.json({ message: 'Acteur supprimé avec succès' });
+
+      // Journalisation en cas de succès
+      logger.info('Acteur supprimé avec succès', { actor: deletedActor });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Erreur lors de la suppression de l\'acteur' });
+
+      // Journalisation en cas d'erreur
+      logger.error('Erreur lors de la suppression de l\'acteur', { error: error });
     }
   }
 }
